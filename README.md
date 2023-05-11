@@ -1,4 +1,5 @@
-# Jubjub Curve [![crates.io badge](https://img.shields.io/crates/v/zero-jubjub.svg)](https://crates.io/crates/zero-jubjub)
+# Jubjub Curve 
+[![CI](https://github.com/KogarashiNetwork/jubjub/actions/workflows/ci.yml/badge.svg)](https://github.com/KogarashiNetwork/jubjub/actions/workflows/ci.yml) [![crates.io badge](https://img.shields.io/crates/v/zero-jubjub.svg)](https://crates.io/crates/zero-jubjub) [![GitHub license](https://img.shields.io/badge/license-GPL3%2FApache2-blue)](#LICENSE) [![dependency status](https://deps.rs/crate/zero-jubjub/0.1.11/status.svg)](https://deps.rs/crate/zero-jubjub/0.1.11)
 This crate provides jubjub curve arithmetic and also supports fully `no_std` and [`parity-scale-codec`](https://github.com/paritytech/parity-scale-codec).
 
 # Specification

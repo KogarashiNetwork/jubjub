@@ -1,0 +1,63 @@
+name: CI
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ] 
+
+jobs:
+  format:
+    if: github.event.pull_request.draft == false
+    name: Code Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ vars.RUST_TOOLCHAIN }}
+          override: true
+      - run: rustup component add rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  clippy:
+      if: github.event.pull_request.draft == false
+      name: Clippy Check
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions-rs/toolchain@v1
+          with:
+            toolchain: ${{ vars.RUST_TOOLCHAIN }}
+            override: true
+        - run: rustup component add clippy
+        - uses: actions-rs/cargo@v1
+          with:
+            command: clippy
+            args: --workspace --all-features
+
+  testcov:
+    if: github.event.pull_request.draft == false
+    name: Test Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ vars.RUST_TOOLCHAIN }}
+          override: true
+      - name: Run cargo-tarpaulin
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          version: '0.22.0'
+          args: '--release --all-features --no-fail-fast --engine Llvm'
+          out-type: 'Lcov'
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
