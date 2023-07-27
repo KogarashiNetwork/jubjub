@@ -36,6 +36,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
+name = "bls-12-381"
+version = "0.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4e3a742c4da006d8a93a776781a64a35d4c288f60b2a531b9511b1eddd45b5e7"
+dependencies = [
+ "parity-scale-codec",
+ "rand_core",
+ "serde",
+ "zkstd",
+]
+
+[[package]]
 name = "byte-slice-cast"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -58,26 +70,6 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
-
-[[package]]
-name = "derive-hex"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b6618553c32cd1c1f4fbdb9418cc035f3168422f24406ebb08576f6db5ed6ec"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "dusk-bytes"
-version = "0.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4aae12696d965c95ce5b79bc5612575e8aeac958c9e037b74ffa9e73e1cd8c7"
-dependencies = [
- "derive-hex",
-]
 
 [[package]]
 name = "errno"
@@ -161,6 +153,19 @@ dependencies = [
  "hermit-abi",
  "libc",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "jub-jub"
+version = "0.1.10"
+dependencies = [
+ "bls-12-381",
+ "parity-scale-codec",
+ "paste",
+ "proptest",
+ "rand_core",
+ "serde",
+ "zkstd",
 ]
 
 [[package]]
@@ -401,12 +406,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35391ea974fa5ee869cb094d5b437688fbf3d8127d64d1b9fed5822a1ed39b12"
 
 [[package]]
-name = "subtle"
-version = "2.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81cdd64d312baedb58e21336b31bc043b77e01cc99033ce76ef539f78e965ebc"
-
-[[package]]
 name = "syn"
 version = "1.0.82"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -619,45 +618,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
 
 [[package]]
-name = "zero-bls12-381"
-version = "0.1.11"
+name = "zkstd"
+version = "0.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dae4d3131c56b9c62a88131ed895edab17b117a13f0636ece6b43bf947e2422d"
+checksum = "b979db769dc5d78b4ef00cb85e932a1be04f08459610eafd9055996ee76e7e13"
 dependencies = [
- "dusk-bytes",
- "parity-scale-codec",
- "rand_core",
- "serde",
- "subtle",
- "zero-crypto",
-]
-
-[[package]]
-name = "zero-crypto"
-version = "0.1.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3395a3cd11230b06c0b026e8618f0c441ea4f2b71a5361c5fd41b4262f2159e8"
-dependencies = [
- "dusk-bytes",
  "parity-scale-codec",
  "paste",
  "rand_core",
  "sp-std",
- "subtle",
-]
-
-[[package]]
-name = "zero-jubjub"
-version = "0.1.11"
-dependencies = [
- "dusk-bytes",
- "parity-scale-codec",
- "paste",
- "proptest",
- "rand_core",
- "serde",
- "sp-std",
- "subtle",
- "zero-bls12-381",
- "zero-crypto",
 ]
