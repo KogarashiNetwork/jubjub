@@ -4,8 +4,8 @@ authors = [
     'KiriosK<KiriosK@yandex.ru>'
 ]
 name = "jub-jub"
-description = 'twisted edwards curve implementation'
-version = "0.0.10"
+description = 'twisted edwards curve jubjub implementation'
+version = "0.0.11"
 edition = "2021"
 license = "Apache-2.0"
 homepage = 'https://github.com/KogarashiNetwork/Kogarashi/'
@@ -13,8 +13,8 @@ repository = 'https://github.com/KogarashiNetwork/Kogarashi/'
 readme = 'README.md'
 
 [dependencies]
-zkstd = { version = "0.0.10", default-features = false }
-bls-12-381 = { version = "0.0.10", default-features = false }
+zkstd = { version = "0.0.11", default-features = false }
+bls-12-381 = { version = "0.0.11", default-features = false }
 serde = { version = "1.0.102", default-features = false, features = ["derive"] }
 parity-scale-codec = { version = "2.0.0", default-features = false, features = ["derive"] }
 rand_core = { version="0.6.4", default-features = false }
