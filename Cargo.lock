@@ -157,7 +157,7 @@ dependencies = [
 
 [[package]]
 name = "jub-jub"
-version = "0.0.11"
+version = "0.0.13"
 dependencies = [
  "bls-12-381",
  "parity-scale-codec",
