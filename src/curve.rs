@@ -93,7 +93,7 @@ impl Add for JubjubAffine {
     type Output = JubjubExtended;
 
     fn add(self, rhs: JubjubAffine) -> Self::Output {
-        add_point(self.to_extended(), rhs.to_extended())
+        add_affine_point(self, rhs)
     }
 }
 
@@ -112,7 +112,7 @@ impl Sub for JubjubAffine {
     type Output = JubjubExtended;
 
     fn sub(self, rhs: JubjubAffine) -> Self::Output {
-        add_point(self.to_extended(), rhs.neg().to_extended())
+        add_affine_point(self, rhs.neg())
     }
 }
 
@@ -165,21 +165,20 @@ impl<'a, 'b> Mul<&'b Fp> for &'a JubjubAffine {
     #[inline]
     fn mul(self, rhs: &'b Fp) -> JubjubExtended {
         let mut res = JubjubExtended::ADDITIVE_IDENTITY;
-        let mut acc = self.to_extended();
         for &naf in rhs.to_nafs().iter() {
+            res = double_projective_point(res);
             if naf == Naf::Plus {
-                res += acc;
+                res += self;
             } else if naf == Naf::Minus {
-                res -= acc;
+                res -= self;
             }
-            acc = acc.double();
         }
         res
     }
 }
 
 /// Twisted Edwards curve Jubjub extended coordinate
-#[derive(Clone, Copy, Debug, Encode, Decode, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Encode, Decode, Deserialize, Serialize, PartialOrd, Ord)]
 pub struct JubjubExtended {
     x: Fr,
     y: Fr,
@@ -191,7 +190,7 @@ impl Add for JubjubExtended {
     type Output = JubjubExtended;
 
     fn add(self, rhs: JubjubExtended) -> Self::Output {
-        add_point(self, rhs)
+        add_projective_point(self, rhs)
     }
 }
 
@@ -222,7 +221,7 @@ impl Sub for JubjubExtended {
     type Output = JubjubExtended;
 
     fn sub(self, rhs: JubjubExtended) -> Self::Output {
-        add_point(self, rhs.neg())
+        add_projective_point(self, rhs.neg())
     }
 }
 
@@ -277,14 +276,13 @@ impl<'a, 'b> Mul<&'b Fp> for &'a JubjubExtended {
     #[inline]
     fn mul(self, rhs: &'b Fp) -> JubjubExtended {
         let mut res = JubjubExtended::ADDITIVE_IDENTITY;
-        let mut acc = *self;
         for &naf in rhs.to_nafs().iter() {
+            res = double_projective_point(res);
             if naf == Naf::Plus {
-                res += acc;
+                res += self;
             } else if naf == Naf::Minus {
-                res -= acc;
+                res -= self;
             }
-            acc = acc.double();
         }
         res
     }
