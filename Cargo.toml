@@ -5,7 +5,7 @@ authors = [
 ]
 name = "jub-jub"
 description = 'twisted edwards curve implementation'
-version = "0.0.15"
+version = "0.0.16"
 edition = "2021"
 license = "Apache-2.0"
 homepage = 'https://github.com/KogarashiNetwork/Kogarashi/'
@@ -19,8 +19,8 @@ all-features = true
 rustdoc-args = ["--cfg", "docsrs", "--html-in-header", "katex-header.html"]
 
 [dependencies]
-zkstd = { version = "0.0.13", default-features = false }
-bls-12-381 = { version = "0.0.13", default-features = false }
+zkstd = { version = "0.0.20", default-features = false }
+bls-12-381 = { version = "0.0.20", default-features = false }
 serde = { version = "1.0.102", default-features = false, features = ["derive"] }
 parity-scale-codec = { version = "2.0.0", default-features = false, features = ["derive"] }
 rand_core = { version="0.6.4", default-features = false }
