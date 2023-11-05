@@ -4,7 +4,7 @@ pub use bls_12_381::Fr;
 use serde::{Deserialize, Serialize};
 use zkstd::arithmetic::edwards::*;
 use zkstd::common::*;
-use zkstd::dress::curve::edwards::*;
+use zkstd::macros::curve::edwards::*;
 
 /// Twisted Edwards curve Jubjub D params
 pub const EDWARDS_D: Fr = Fr::to_mont_form([
@@ -116,37 +116,12 @@ impl Sub for JubjubAffine {
     }
 }
 
-impl Mul<Fr> for JubjubAffine {
-    type Output = JubjubExtended;
-
-    fn mul(self, rhs: Fr) -> Self::Output {
-        scalar_point(self.to_extended(), &rhs)
-    }
-}
-
-impl Mul<JubjubAffine> for Fr {
-    type Output = JubjubExtended;
-
-    fn mul(self, rhs: JubjubAffine) -> Self::Output {
-        rhs * self
-    }
-}
-
 impl Mul<JubjubAffine> for Fp {
     type Output = JubjubExtended;
 
     #[inline]
     fn mul(self, rhs: JubjubAffine) -> JubjubExtended {
-        &self * &rhs
-    }
-}
-
-impl<'a, 'b> Mul<&'b JubjubAffine> for &'a Fp {
-    type Output = JubjubExtended;
-
-    #[inline]
-    fn mul(self, rhs: &'b JubjubAffine) -> JubjubExtended {
-        rhs * self
+        scalar_point(rhs.to_extended(), &self)
     }
 }
 
@@ -155,25 +130,7 @@ impl Mul<Fp> for JubjubAffine {
 
     #[inline]
     fn mul(self, rhs: Fp) -> JubjubExtended {
-        &self * &rhs
-    }
-}
-
-impl<'a, 'b> Mul<&'b Fp> for &'a JubjubAffine {
-    type Output = JubjubExtended;
-
-    #[inline]
-    fn mul(self, rhs: &'b Fp) -> JubjubExtended {
-        let mut res = JubjubExtended::ADDITIVE_IDENTITY;
-        for &naf in rhs.to_nafs().iter() {
-            res = double_projective_point(res);
-            if naf == Naf::Plus {
-                res += self;
-            } else if naf == Naf::Minus {
-                res -= self;
-            }
-        }
-        res
+        scalar_point(self.to_extended(), &rhs)
     }
 }
 
@@ -225,39 +182,12 @@ impl Sub for JubjubExtended {
     }
 }
 
-impl Mul<Fr> for JubjubExtended {
-    type Output = JubjubExtended;
-
-    fn mul(self, rhs: Fr) -> Self::Output {
-        scalar_point(self, &rhs)
-    }
-}
-
-impl Mul<JubjubExtended> for Fr {
-    type Output = JubjubExtended;
-
-    fn mul(self, rhs: JubjubExtended) -> Self::Output {
-        rhs * self
-    }
-}
-
-twisted_edwards_curve_operation!(Fr, Fr, EDWARDS_D, JubjubAffine, JubjubExtended, X, Y, T);
-
 impl Mul<JubjubExtended> for Fp {
     type Output = JubjubExtended;
 
     #[inline]
     fn mul(self, rhs: JubjubExtended) -> JubjubExtended {
-        &self * &rhs
-    }
-}
-
-impl<'a, 'b> Mul<&'b JubjubExtended> for &'a Fp {
-    type Output = JubjubExtended;
-
-    #[inline]
-    fn mul(self, rhs: &'b JubjubExtended) -> JubjubExtended {
-        rhs * self
+        scalar_point(rhs, &self)
     }
 }
 
@@ -266,40 +196,24 @@ impl Mul<Fp> for JubjubExtended {
 
     #[inline]
     fn mul(self, rhs: Fp) -> JubjubExtended {
-        &self * &rhs
+        scalar_point(self, &rhs)
     }
 }
 
-impl<'a, 'b> Mul<&'b Fp> for &'a JubjubExtended {
-    type Output = JubjubExtended;
-
-    #[inline]
-    fn mul(self, rhs: &'b Fp) -> JubjubExtended {
-        let mut res = JubjubExtended::ADDITIVE_IDENTITY;
-        for &naf in rhs.to_nafs().iter() {
-            res = double_projective_point(res);
-            if naf == Naf::Plus {
-                res += self;
-            } else if naf == Naf::Minus {
-                res -= self;
-            }
-        }
-        res
-    }
-}
+twisted_edwards_curve_operation!(Fp, Fr, EDWARDS_D, JubjubAffine, JubjubExtended, X, Y, T);
 
 #[cfg(test)]
 mod tests {
     #[allow(unused_imports)]
     use super::*;
-    use zkstd::dress::curve::weierstrass::*;
+    use zkstd::macros::curve::weierstrass::*;
 
-    curve_test!(jubjub, Fr, JubjubAffine, JubjubExtended, 100);
+    curve_test!(jubjub, Fp, JubjubAffine, JubjubExtended, 100);
 
     #[test]
     fn test_serde() {
         for _ in 0..1000 {
-            let s = Fr::random(OsRng);
+            let s = Fp::random(OsRng);
             let point = s * JubjubAffine::ADDITIVE_GENERATOR;
             let bytes = point.to_bytes();
             let point_p = JubjubAffine::from_bytes(bytes).unwrap();

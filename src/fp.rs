@@ -3,7 +3,7 @@ use bls_12_381::Fr;
 use serde::{Deserialize, Serialize};
 use zkstd::arithmetic::bits_256::*;
 use zkstd::common::*;
-use zkstd::dress::field::*;
+use zkstd::macros::field::*;
 
 const MODULUS: [u64; 4] = [
     0xd0970e5ed6f72cb7,
@@ -201,6 +201,19 @@ impl From<i8> for Fp {
             (false, true) => -Fp([val.unsigned_abs() as u64, 0u64, 0u64, 0u64]),
             (_, _) => unreachable!(),
         }
+    }
+}
+
+impl From<Fr> for Fp {
+    fn from(scalar: Fr) -> Fp {
+        let bls_scalar = Fp::from_bytes(scalar.to_bytes());
+
+        assert!(
+            bls_scalar.is_some(),
+            "Failed to convert a Scalar from Bls to Jubjub"
+        );
+
+        bls_scalar.unwrap()
     }
 }
 
